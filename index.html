@@ -121,12 +121,24 @@
       display: none;
       width: 100%;
       max-width: 900px;
+      margin: 0 auto;
     }
-    iframe {
+    .future-text {
+      font-size: 2.5rem;
+      color: #ffeb3b;
+      text-shadow: 0 0 20px #ff6f00, 0 0 30px #ffeb3b;
+      margin: 0 0 25px 0;
+      padding: 15px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 15px;
+      display: inline-block;
+    }
+    video {
       width: 100%;
       height: 506px;
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0,255,234,0.4);
+      background: #000;
     }
   </style>
 </head>
@@ -134,14 +146,14 @@
   <div class="container" id="formContainer">
     <h1>अपना भविष्य देखें!</h1>
     <p class="subtitle">कृपया भविष्य देखने के लिए नीचे दी गई जानकारी भरे</p>
-   
+  
     <form id="myForm">
       <label for="name">Tera Naam:</label>
       <input type="text" id="name" placeholder="Yahan naam likh do..." required>
-     
+    
       <label for="dob">Janm Tithi (DOB):</label>
       <input type="date" id="dob" required>
-     
+    
       <button type="submit">Dekhna Shuru Kare →</button>
     </form>
   </div>
@@ -149,22 +161,25 @@
   <div class="container" id="waitingScreen">
     <div id="userNameDisplay"></div>
     <div id="waitingMessage">कृपया सब्र करें...<br>आपका भविष्य इतना भी उज्ज्वल नहीं है 😈</div>
-    
+   
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
-    
+   
     <div id="statusText"></div>
   </div>
 
   <div id="videoContainer">
-    <iframe
-      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0"
-      title="Surprise Video"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+    <div style="text-align: center;">
+      <h2 class="future-text">Tumhre bhavishya me ...</h2>
+    </div>
+    
+    <video controls autoplay>
+      <source src="Video1" type="video/mp4">
+      <source src="Video1.mp4" type="video/mp4">
+      <source src="Video1.webm" type="video/webm">
+      Your browser does not support the video tag.
+    </video>
   </div>
 
   <script>
@@ -179,7 +194,6 @@
 
     document.getElementById("myForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
       const name = document.getElementById("name").value.trim();
       const dob = document.getElementById("dob").value;
 
@@ -190,14 +204,14 @@
 
       // Form छुपाओ
       document.getElementById("formContainer").style.display = "none";
-
+      
       // Waiting screen दिखाओ
       document.getElementById("waitingScreen").style.display = "block";
-
+      
       // नाम डाल दो
       document.getElementById("userNameDisplay").textContent = name + "!";
 
-      // Progress bar शुरू (11 सेकंड में पूरा)
+      // Progress bar शुरू
       const progressBar = document.getElementById("progressBar");
       setTimeout(() => {
         progressBar.style.width = "100%";
@@ -206,22 +220,19 @@
       // मैसेज बदलते रहो
       const statusText = document.getElementById("statusText");
       let index = 0;
-
       const interval = setInterval(() => {
         statusText.textContent = messages[index];
         index++;
-
         if (index >= messages.length) {
           clearInterval(interval);
-          // आखिरी मैसेज के बाद 1 सेकंड वेट करके वीडियो
           setTimeout(() => {
             document.getElementById("waitingScreen").style.display = "none";
             document.getElementById("videoContainer").style.display = "block";
           }, 1000);
         }
-      }, 1800); // हर 1.8 सेकंड में नया मैसेज → कुल ~10.8 सेकंड + 1s ≈ 12s
+      }, 1800);
 
-      // सेफ्टी बैकअप: 13 सेकंड बाद फोर्स वीडियो
+      // सेफ्टी बैकअप
       setTimeout(() => {
         if (document.getElementById("videoContainer").style.display !== "block") {
           document.getElementById("waitingScreen").style.display = "none";
