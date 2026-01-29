@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kuch Naya Dekhe</title>
+  <title>अपना भविष्य देखें!</title>
   <style>
     body {
       margin: 0;
@@ -103,7 +103,7 @@
       background: linear-gradient(to right, #00ffea, #00d4c0, #00ffea);
       background-size: 200% 100%;
       animation: gradient 3s linear infinite;
-      transition: width 11s linear;
+      transition: width 10s ease-in-out;
       border-radius: 30px;
     }
     @keyframes gradient {
@@ -137,7 +137,8 @@
     }
     video {
       width: 100%;
-      height: 506px;
+      height: auto;
+      max-height: 506px;
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0,255,234,0.4);
       background: #000;
@@ -145,18 +146,17 @@
   </style>
 </head>
 <body>
-
   <div class="container" id="formContainer">
     <h1>अपना भविष्य देखें!</h1>
     <p class="subtitle">कृपया भविष्य देखने के लिए नीचे दी गई जानकारी भरे</p>
-  
+ 
     <form id="myForm">
       <label for="name">Tera Naam:</label>
       <input type="text" id="name" placeholder="Yahan naam likh do..." required>
-    
+   
       <label for="dob">Janm Tithi (DOB):</label>
       <input type="date" id="dob" required>
-    
+   
       <button type="submit">Dekhna Shuru Kare →</button>
     </form>
   </div>
@@ -164,29 +164,29 @@
   <div class="container" id="waitingScreen">
     <div id="userNameDisplay"></div>
     <div id="waitingMessage">कृपया सब्र करें...<br>आपका भविष्य इतना भी उज्ज्वल नहीं है 😈</div>
-   
+  
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
-   
+  
     <div id="statusText"></div>
   </div>
 
   <div id="videoContainer">
     <div style="text-align: center;">
-      <h2 class="future-text">आपके भविष्य में... </h2>
+      <h2 class="future-text">आपके भविष्य में...</h2>
     </div>
-    
+   
     <video id="futureVideo" controls playsinline>
       <source src="Video1.mp4" type="video/mp4">
-      <source src="Video1" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
 
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz34NNV-KIY6bJn3xJ8PJhFJ1NOeH713lJo0neNj_X7mE4mVuqcObiSxTg2gyGavtXY/exec";
+
     const messages = [
-    
       "आपकी राशि match कर ली गई है 🔮",
       "पंडित Elon Musk से संपर्क किया जा रहा है...",
       "ग्रह-नक्षत्रों की दृष्टि देखी जा रही है 🌑✨",
@@ -195,57 +195,78 @@
       "आपका भाग्य सफलतापूर्वक fetch किया गया! 🚀"
     ];
 
-    document.getElementById("myForm").addEventListener("submit", function(e) {
+    document.getElementById("myForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       
       const name = document.getElementById("name").value.trim();
       const dob = document.getElementById("dob").value;
-
+      
       if (!name || !dob) {
         alert("Naam aur DOB dono daal do bhai!");
         return;
       }
 
+      // Form hide, waiting show
       document.getElementById("formContainer").style.display = "none";
       document.getElementById("waitingScreen").style.display = "block";
       document.getElementById("userNameDisplay").textContent = name + "!";
 
+      // Progress bar start
       const progressBar = document.getElementById("progressBar");
-      setTimeout(() => {
-        progressBar.style.width = "100%";
-      }, 100);
+      progressBar.style.width = "100%";
 
+      // Messages rotate
       const statusText = document.getElementById("statusText");
       let index = 0;
       const interval = setInterval(() => {
-        statusText.textContent = messages[index];
-        index++;
-        if (index >= messages.length) {
-          clearInterval(interval);
-          setTimeout(showAndPlayVideo, 1000);
-        }
+        statusText.textContent = messages[index] || "Final touch...";
+        index = (index + 1) % messages.length;
       }, 1800);
 
-      // बैकअप टाइमर
-      setTimeout(showAndPlayVideo, 13000);
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "cors",           // Important for GAS
+          redirect: "follow",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            name: name,
+            dob: dob
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        clearInterval(interval);
+
+        if (result.status === "success") {
+          statusText.textContent = "भविष्य तैयार है! 🔥";
+          setTimeout(showAndPlayVideo, 1500);
+        } else {
+          statusText.textContent = "कुछ गड़बड़: " + (result.message || "Unknown error");
+        }
+
+      } catch (err) {
+        clearInterval(interval);
+        statusText.textContent = "Error: " + err.message + "\n(Sheet check karo, shayad data pahunch gaya ho)";
+      }
     });
 
     function showAndPlayVideo() {
       document.getElementById("waitingScreen").style.display = "none";
-      const container = document.getElementById("videoContainer");
-      container.style.display = "block";
-
+      document.getElementById("videoContainer").style.display = "block";
+      
       const video = document.getElementById("futureVideo");
-      if (video) {
-        video.play()
-          .then(() => {
-            console.log("Video started playing with sound");
-          })
-          .catch(err => {
-            console.log("Autoplay was prevented:", err);
-            // यूजर controls से प्ले कर सकता है
-          });
-      }
+      video.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+        // User click karega play button
+      });
     }
   </script>
 </body>
