@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuch Naya Dekhe</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+    }
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      color: #00ffea;
+      text-shadow: 0 0 10px #00ffea;
+    }
+    p.subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      color: #e0e0e0;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin: 15px 0 5px;
+      font-size: 1.1rem;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+    input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #00ffea;
+      color: black;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #00d4c0;
+      transform: translateY(-3px);
+    }
+    #videoContainer {
+      display: none;
+    }
+    video {
+      width: 100%;
+      max-width: 900px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0,255,234,0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="formContainer">
+    <h1>Kuch Naya Dekhe!</h1>
+    <p class="subtitle">Apna naam aur janm-tithi daalo aur duniya badal jaayegi 😄</p>
+    
+    <form id="myForm">
+      <label for="name">Tera Naam:</label>
+      <input type="text" id="name" placeholder="Yahan naam likh do..." required>
+      
+      <label for="dob">Janm Tithi (DOB):</label>
+      <input type="date" id="dob" required>
+      
+      <button type="submit">Dekhna Shuru Karo →</button>
+    </form>
+  </div>
+
+  <div id="videoContainer">
+    <!-- Yahan apni video daalo -->
+    <!-- Option 1: YouTube video (sabse aasan) -->
+    <iframe 
+      width="100%" height="500" 
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" 
+      title="Surprise Video" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen>
+    </iframe>
+
+    <!-- Option 2: Agar khud ki video GitHub pe upload ki hai to -->
+    <!-- <video controls autoplay>
+      <source src="your-video.mp4" type="video/mp4">
+      Browser video support nahi kar raha
+    </video> -->
+  </div>
+
+  <script>
+    document.getElementById("myForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // form submit hone se rok do
+
+      // Optional: name aur dob check kar sakte ho
+      let name = document.getElementById("name").value;
+      let dob = document.getElementById("dob").value;
+
+      if (!name || !dob) {
+        alert("Naam aur DOB dono daal do bhai!");
+        return;
+      }
+
+      // Form hide karo, video dikhao
+      document.getElementById("formContainer").style.display = "none";
+      document.getElementById("videoContainer").style.display = "block";
+    });
+  </script>
+
+</body>
+</html>
