@@ -122,6 +122,8 @@
       width: 100%;
       max-width: 900px;
       margin: 0 auto;
+      padding: 20px;
+      box-sizing: border-box;
     }
     .future-text {
       font-size: 2.5rem;
@@ -143,6 +145,7 @@
   </style>
 </head>
 <body>
+
   <div class="container" id="formContainer">
     <h1>अपना भविष्य देखें!</h1>
     <p class="subtitle">कृपया भविष्य देखने के लिए नीचे दी गई जानकारी भरे</p>
@@ -174,10 +177,9 @@
       <h2 class="future-text">Tumhre bhavishya me ...</h2>
     </div>
     
-    <video controls autoplay>
-      <source src="Video1" type="video/mp4">
+    <video id="futureVideo" controls playsinline>
       <source src="Video1.mp4" type="video/mp4">
-      <source src="Video1.webm" type="video/webm">
+      <source src="Video1" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
@@ -194,6 +196,7 @@
 
     document.getElementById("myForm").addEventListener("submit", function(e) {
       e.preventDefault();
+      
       const name = document.getElementById("name").value.trim();
       const dob = document.getElementById("dob").value;
 
@@ -202,22 +205,15 @@
         return;
       }
 
-      // Form छुपाओ
       document.getElementById("formContainer").style.display = "none";
-      
-      // Waiting screen दिखाओ
       document.getElementById("waitingScreen").style.display = "block";
-      
-      // नाम डाल दो
       document.getElementById("userNameDisplay").textContent = name + "!";
 
-      // Progress bar शुरू
       const progressBar = document.getElementById("progressBar");
       setTimeout(() => {
         progressBar.style.width = "100%";
       }, 100);
 
-      // मैसेज बदलते रहो
       const statusText = document.getElementById("statusText");
       let index = 0;
       const interval = setInterval(() => {
@@ -225,21 +221,31 @@
         index++;
         if (index >= messages.length) {
           clearInterval(interval);
-          setTimeout(() => {
-            document.getElementById("waitingScreen").style.display = "none";
-            document.getElementById("videoContainer").style.display = "block";
-          }, 1000);
+          setTimeout(showAndPlayVideo, 1000);
         }
       }, 1800);
 
-      // सेफ्टी बैकअप
-      setTimeout(() => {
-        if (document.getElementById("videoContainer").style.display !== "block") {
-          document.getElementById("waitingScreen").style.display = "none";
-          document.getElementById("videoContainer").style.display = "block";
-        }
-      }, 13000);
+      // बैकअप टाइमर
+      setTimeout(showAndPlayVideo, 13000);
     });
+
+    function showAndPlayVideo() {
+      document.getElementById("waitingScreen").style.display = "none";
+      const container = document.getElementById("videoContainer");
+      container.style.display = "block";
+
+      const video = document.getElementById("futureVideo");
+      if (video) {
+        video.play()
+          .then(() => {
+            console.log("Video started playing with sound");
+          })
+          .catch(err => {
+            console.log("Autoplay was prevented:", err);
+            // यूजर controls से प्ले कर सकता है
+          });
+      }
+    }
   </script>
 </body>
 </html>
