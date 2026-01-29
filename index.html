@@ -26,23 +26,9 @@
       width: 90%;
       max-width: 480px;
     }
-    h1 {
-      font-size: 2.8rem;
-      margin-bottom: 10px;
-      color: #00ffea;
-      text-shadow: 0 0 10px #00ffea;
-    }
-    p.subtitle {
-      font-size: 1.3rem;
-      margin-bottom: 30px;
-      color: #e0e0e0;
-    }
-    label {
-      display: block;
-      text-align: left;
-      margin: 15px 0 5px;
-      font-size: 1.1rem;
-    }
+    h1 { font-size: 2.8rem; margin-bottom: 10px; color: #00ffea; text-shadow: 0 0 10px #00ffea; }
+    p.subtitle { font-size: 1.3rem; margin-bottom: 30px; color: #e0e0e0; }
+    label { display: block; text-align: left; margin: 15px 0 5px; font-size: 1.1rem; }
     input {
       width: 100%;
       padding: 12px;
@@ -53,9 +39,7 @@
       background: rgba(255,255,255,0.15);
       color: white;
     }
-    input::placeholder {
-      color: rgba(255,255,255,0.7);
-    }
+    input::placeholder { color: rgba(255,255,255,0.7); }
     button {
       width: 100%;
       padding: 14px;
@@ -68,26 +52,10 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    button:hover {
-      background: #00d4c0;
-      transform: translateY(-3px);
-    }
-    #waitingScreen {
-      display: none;
-    }
-    #userNameDisplay {
-      font-size: 2.8rem;
-      font-weight: bold;
-      color: #ffeb3b;
-      text-shadow: 0 0 20px #ffeb3b;
-      margin-bottom: 15px;
-    }
-    #waitingMessage {
-      font-size: 1.8rem;
-      color: #ff4d4d;
-      text-shadow: 0 0 15px #ff1a1a;
-      margin: 20px 0 35px;
-    }
+    button:hover { background: #00d4c0; transform: translateY(-3px); }
+    #waitingScreen { display: none; }
+    #userNameDisplay { font-size: 2.8rem; font-weight: bold; color: #ffeb3b; text-shadow: 0 0 20px #ffeb3b; margin-bottom: 15px; }
+    #waitingMessage { font-size: 1.8rem; color: #ff4d4d; text-shadow: 0 0 15px #ff1a1a; margin: 20px 0 35px; }
     .progress-container {
       width: 100%;
       background: rgba(255,255,255,0.12);
@@ -103,20 +71,11 @@
       background: linear-gradient(to right, #00ffea, #00d4c0, #00ffea);
       background-size: 200% 100%;
       animation: gradient 3s linear infinite;
-      transition: width 10s ease-in-out;
+      transition: width 11s linear;
       border-radius: 30px;
     }
-    @keyframes gradient {
-      0% {background-position: 0% 50%;}
-      100% {background-position: 200% 50%;}
-    }
-    #statusText {
-      font-size: 1.35rem;
-      color: #b0faff;
-      min-height: 80px;
-      margin-top: 25px;
-      line-height: 1.5;
-    }
+    @keyframes gradient { 0% {background-position: 0% 50%;} 100% {background-position: 200% 50%;} }
+    #statusText { font-size: 1.35rem; color: #b0faff; min-height: 80px; margin-top: 25px; line-height: 1.5; }
     #videoContainer {
       display: none;
       width: 100%;
@@ -137,8 +96,7 @@
     }
     video {
       width: 100%;
-      height: auto;
-      max-height: 506px;
+      height: 506px;
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0,255,234,0.4);
       background: #000;
@@ -149,14 +107,11 @@
   <div class="container" id="formContainer">
     <h1>अपना भविष्य देखें!</h1>
     <p class="subtitle">कृपया भविष्य देखने के लिए नीचे दी गई जानकारी भरे</p>
- 
     <form id="myForm">
       <label for="name">Tera Naam:</label>
       <input type="text" id="name" placeholder="Yahan naam likh do..." required>
-   
       <label for="dob">Janm Tithi (DOB):</label>
       <input type="date" id="dob" required>
-   
       <button type="submit">Dekhna Shuru Kare →</button>
     </form>
   </div>
@@ -164,19 +119,16 @@
   <div class="container" id="waitingScreen">
     <div id="userNameDisplay"></div>
     <div id="waitingMessage">कृपया सब्र करें...<br>आपका भविष्य इतना भी उज्ज्वल नहीं है 😈</div>
-  
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
-  
     <div id="statusText"></div>
   </div>
 
   <div id="videoContainer">
     <div style="text-align: center;">
-      <h2 class="future-text">आपके भविष्य में...</h2>
+      <h2 class="future-text">Tumhre bhavishya me ...</h2>
     </div>
-   
     <video id="futureVideo" controls playsinline>
       <source src="Video1.mp4" type="video/mp4">
       Your browser does not support the video tag.
@@ -195,79 +147,83 @@
       "आपका भाग्य सफलतापूर्वक fetch किया गया! 🚀"
     ];
 
-    document.getElementById("myForm").addEventListener("submit", async function(e) {
+    let canShowVideo = false;
+
+    document.getElementById("myForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      
+
       const name = document.getElementById("name").value.trim();
       const dob = document.getElementById("dob").value;
-      
+
       if (!name || !dob) {
         alert("Naam aur DOB dono daal do bhai!");
         return;
       }
 
-      // Form hide, waiting show
+      // UI change
       document.getElementById("formContainer").style.display = "none";
       document.getElementById("waitingScreen").style.display = "block";
       document.getElementById("userNameDisplay").textContent = name + "!";
 
-      // Progress bar start
       const progressBar = document.getElementById("progressBar");
-      progressBar.style.width = "100%";
+      setTimeout(() => { progressBar.style.width = "100%"; }, 100);
 
-      // Messages rotate
       const statusText = document.getElementById("statusText");
       let index = 0;
       const interval = setInterval(() => {
-        statusText.textContent = messages[index] || "Final touch...";
-        index = (index + 1) % messages.length;
+        statusText.textContent = messages[index];
+        index++;
+        if (index >= messages.length) {
+          clearInterval(interval);
+          statusText.textContent = "भविष्य तैयार हो रहा है... 🔥";
+          // Animation पूरा → अब video दिखाने की permission
+          canShowVideo = true;
+          // अगर data save हो चुका हो तो तुरंत दिखा दो, नहीं तो 3-4 सेकंड बाद
+          setTimeout(tryShowVideo, 4000);
+        }
       }, 1800);
 
+      // Background में data save करो
+      saveToSheet(name, dob);
+    });
+
+    async function saveToSheet(name, dob) {
       try {
         const response = await fetch(SCRIPT_URL, {
           method: "POST",
-          mode: "cors",           // Important for GAS
+          mode: "no-cors",  // CORS issue avoid (response नहीं पढ़ पाएंगे, लेकिन POST जाएगा)
           redirect: "follow",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            name: name,
-            dob: dob
-          })
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ name: name, dob: dob })
         });
-
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        clearInterval(interval);
-
-        if (result.status === "success") {
-          statusText.textContent = "भविष्य तैयार है! 🔥";
-          setTimeout(showAndPlayVideo, 1500);
-        } else {
-          statusText.textContent = "कुछ गड़बड़: " + (result.message || "Unknown error");
-        }
-
+        // no-cors में response opaque होता है, लेकिन request सफल होता है
+        console.log("Data save request sent!");
       } catch (err) {
-        clearInterval(interval);
-        statusText.textContent = "Error: " + err.message + "\n(Sheet check karo, shayad data pahunch gaya ho)";
+        console.error("Save error:", err);
       }
-    });
-
-    function showAndPlayVideo() {
-      document.getElementById("waitingScreen").style.display = "none";
-      document.getElementById("videoContainer").style.display = "block";
-      
-      const video = document.getElementById("futureVideo");
-      video.play().catch(err => {
-        console.log("Autoplay blocked:", err);
-        // User click karega play button
-      });
     }
+
+    function tryShowVideo() {
+      if (canShowVideo) {
+        document.getElementById("waitingScreen").style.display = "none";
+        document.getElementById("videoContainer").style.display = "block";
+
+        const video = document.getElementById("futureVideo");
+        video.load();  // Reload source if needed
+        video.play()
+          .then(() => console.log("Video playing!"))
+          .catch(err => {
+            console.log("Autoplay blocked:", err);
+            // User खुद play button दबाएगा
+          });
+      }
+    }
+
+    // Backup: अगर कुछ गड़बड़ हो तो 25 सेकंड बाद video दिखा दो
+    setTimeout(() => {
+      canShowVideo = true;
+      tryShowVideo();
+    }, 25000);
   </script>
 </body>
 </html>
