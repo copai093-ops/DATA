@@ -76,38 +76,46 @@
       display: none;
     }
     #userNameDisplay {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: bold;
       color: #ffeb3b;
-      text-shadow: 0 0 15px #ffeb3b;
-      margin-bottom: 10px;
+      text-shadow: 0 0 20px #ffeb3b;
+      margin-bottom: 15px;
     }
     #waitingMessage {
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       color: #ff4d4d;
       text-shadow: 0 0 15px #ff1a1a;
-      margin: 20px 0 30px;
+      margin: 20px 0 35px;
     }
     .progress-container {
       width: 100%;
-      background: rgba(255,255,255,0.1);
-      border-radius: 25px;
-      height: 20px;
-      margin: 25px 0;
+      background: rgba(255,255,255,0.12);
+      border-radius: 30px;
+      height: 24px;
+      margin: 30px 0;
       overflow: hidden;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
     }
     .progress-bar {
       width: 0%;
       height: 100%;
-      background: linear-gradient(to right, #00ffea, #00d4c0);
-      transition: width 4.5s linear;
-      border-radius: 25px;
+      background: linear-gradient(to right, #00ffea, #00d4c0, #00ffea);
+      background-size: 200% 100%;
+      animation: gradient 3s linear infinite;
+      transition: width 11s linear;
+      border-radius: 30px;
+    }
+    @keyframes gradient {
+      0% {background-position: 0% 50%;}
+      100% {background-position: 200% 50%;}
     }
     #statusText {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       color: #b0faff;
-      min-height: 60px;
-      margin-top: 20px;
+      min-height: 80px;
+      margin-top: 25px;
+      line-height: 1.5;
     }
     #videoContainer {
       display: none;
@@ -134,95 +142,4 @@
       <label for="dob">Janm Tithi (DOB):</label>
       <input type="date" id="dob" required>
      
-      <button type="submit">Dekhna Shuru Kare →</button>
-    </form>
-  </div>
-
-  <div class="container" id="waitingScreen">
-    <div id="userNameDisplay"></div>
-    <div id="waitingMessage">कृपया सब्र करें...<br>आपका भविष्य इतना भी उज्ज्वल नहीं है 😈</div>
-    
-    <div class="progress-container">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
-    
-    <div id="statusText"></div>
-  </div>
-
-  <div id="videoContainer">
-    <iframe
-      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0"
-      title="Surprise Video"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
-  </div>
-
-  <script>
-    const messages = [
-      "पंडित Elon Musk से संपर्क किया जा रहा है...",
-      "आपकी राशि match कर ली गई है 🔮",
-      "ग्रह-नक्षत्रों की दृष्टि देखी जा रही है 🌑✨",
-      "2026 के भाग्य को स्कैन किया जा रहा है...",
-      "कुंडली का deep scan चल रहा है...",
-      "आपका भाग्य सफलतापूर्वक fetch किया गया! 🚀"
-    ];
-
-    document.getElementById("myForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const name = document.getElementById("name").value.trim();
-      const dob = document.getElementById("dob").value;
-
-      if (!name || !dob) {
-        alert("Naam aur DOB dono daal do bhai!");
-        return;
-      }
-
-      // Form छुपाओ
-      document.getElementById("formContainer").style.display = "none";
-
-      // Waiting screen दिखाओ
-      const waiting = document.getElementById("waitingScreen");
-      waiting.style.display = "block";
-
-      // नाम डाल दो
-      document.getElementById("userNameDisplay").textContent = name + "!";
-
-      // Progress bar शुरू
-      const progressBar = document.getElementById("progressBar");
-      progressBar.style.width = "0%";
-      setTimeout(() => {
-        progressBar.style.width = "100%";
-      }, 100);
-
-      // मैसेज बदलते रहो
-      const statusText = document.getElementById("statusText");
-      let index = 0;
-
-      const interval = setInterval(() => {
-        statusText.textContent = messages[index];
-        index++;
-
-        if (index >= messages.length) {
-          clearInterval(interval);
-          // आखिरी मैसेज के 1 सेकंड बाद वीडियो दिखाओ
-          setTimeout(() => {
-            waiting.style.display = "none";
-            document.getElementById("videoContainer").style.display = "block";
-          }, 1200);
-        }
-      }, 900); // हर 0.9 सेकंड में नया मैसेज (कुल ~5 सेकंड)
-
-      // बैकअप: 5.5 सेकंड बाद वीडियो फोर्स कर दो
-      setTimeout(() => {
-        if (document.getElementById("videoContainer").style.display !== "block") {
-          waiting.style.display = "none";
-          document.getElementById("videoContainer").style.display = "block";
-        }
-      }, 5500);
-    });
-  </script>
-</body>
-</html>
+      <button type="submit">Dekhna Shuru
