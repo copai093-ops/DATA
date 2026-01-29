@@ -142,4 +142,93 @@
       <label for="dob">Janm Tithi (DOB):</label>
       <input type="date" id="dob" required>
      
-      <button type="submit">Dekhna Shuru
+      <button type="submit">Dekhna Shuru Kare →</button>
+    </form>
+  </div>
+
+  <div class="container" id="waitingScreen">
+    <div id="userNameDisplay"></div>
+    <div id="waitingMessage">कृपया सब्र करें...<br>आपका भविष्य इतना भी उज्ज्वल नहीं है 😈</div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div id="statusText"></div>
+  </div>
+
+  <div id="videoContainer">
+    <iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0"
+      title="Surprise Video"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <script>
+    const messages = [
+      "पंडित Elon Musk से संपर्क किया जा रहा है...",
+      "आपकी राशि match कर ली गई है 🔮",
+      "ग्रह-नक्षत्रों की दृष्टि देखी जा रही है 🌑✨",
+      "2026 के भाग्य को स्कैन किया जा रहा है...",
+      "कुंडली का deep scan चल रहा है...",
+      "आपका भाग्य सफलतापूर्वक fetch किया गया! 🚀"
+    ];
+
+    document.getElementById("myForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const dob = document.getElementById("dob").value;
+
+      if (!name || !dob) {
+        alert("Naam aur DOB dono daal do bhai!");
+        return;
+      }
+
+      // Form छुपाओ
+      document.getElementById("formContainer").style.display = "none";
+
+      // Waiting screen दिखाओ
+      document.getElementById("waitingScreen").style.display = "block";
+
+      // नाम डाल दो
+      document.getElementById("userNameDisplay").textContent = name + "!";
+
+      // Progress bar शुरू (11 सेकंड में पूरा)
+      const progressBar = document.getElementById("progressBar");
+      setTimeout(() => {
+        progressBar.style.width = "100%";
+      }, 100);
+
+      // मैसेज बदलते रहो
+      const statusText = document.getElementById("statusText");
+      let index = 0;
+
+      const interval = setInterval(() => {
+        statusText.textContent = messages[index];
+        index++;
+
+        if (index >= messages.length) {
+          clearInterval(interval);
+          // आखिरी मैसेज के बाद 1 सेकंड वेट करके वीडियो
+          setTimeout(() => {
+            document.getElementById("waitingScreen").style.display = "none";
+            document.getElementById("videoContainer").style.display = "block";
+          }, 1000);
+        }
+      }, 1800); // हर 1.8 सेकंड में नया मैसेज → कुल ~10.8 सेकंड + 1s ≈ 12s
+
+      // सेफ्टी बैकअप: 13 सेकंड बाद फोर्स वीडियो
+      setTimeout(() => {
+        if (document.getElementById("videoContainer").style.display !== "block") {
+          document.getElementById("waitingScreen").style.display = "none";
+          document.getElementById("videoContainer").style.display = "block";
+        }
+      }, 13000);
+    });
+  </script>
+</body>
+</html>
