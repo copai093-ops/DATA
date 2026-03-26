@@ -6,100 +6,68 @@
   <title>Group File Share</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body { font-family: system-ui, sans-serif; }
-  </style>
 </head>
-<body class="bg-gray-50 min-h-screen py-10">
+<body class="bg-gray-100 min-h-screen py-12">
   <div class="max-w-4xl mx-auto px-6">
-    <div class="text-center mb-12">
-      <h1 class="text-5xl font-bold text-blue-600">📁 Group File Share</h1>
-      <p class="text-xl text-gray-600 mt-2">WhatsApp Group ke liye</p>
-    </div>
+    <h1 class="text-4xl font-bold text-center text-blue-700 mb-2">📁 Group File Share</h1>
+    <p class="text-center text-gray-600 mb-10">WhatsApp Group ke liye</p>
 
-    <div class="flex flex-wrap justify-center gap-4 mb-12">
-      <button onclick="uploadFiles()" 
-              class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-3xl text-xl font-semibold flex items-center gap-3 shadow-lg">
-        <i class="fas fa-upload"></i>
-        Upload New Files
+    <div class="flex justify-center gap-6 mb-12">
+      <button onclick="uploadClick()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold flex items-center gap-3">
+        <i class="fas fa-upload"></i> Upload New Files
       </button>
-
-      <button onclick="loadFiles()" 
-              class="bg-gray-800 hover:bg-gray-900 text-white px-10 py-5 rounded-3xl text-xl font-semibold flex items-center gap-3 shadow-lg">
-        <i class="fas fa-sync"></i>
-        Refresh Files
+      <button onclick="loadFiles()" class="bg-gray-700 hover:bg-gray-800 text-white px-8 py-4 rounded-2xl text-lg font-semibold flex items-center gap-3">
+        <i class="fas fa-refresh"></i> Refresh
       </button>
     </div>
 
-    <div id="status" class="text-center text-lg mb-8 text-gray-700 min-h-[30px]"></div>
-
-    <div id="files-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    </div>
+    <div id="status" class="text-center text-lg mb-8"></div>
+    <div id="files" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </div>
 
   <script>
-    const OWNER = "copa1093-ops";
-    const REPO = "DATA";
-    const FOLDER = "uploads";
+    const owner = "copa1093-ops";
+    const repo = "DATA";
 
-    // Upload ke liye sabse safe link
-    function uploadFiles() {
-      window.open(`https://github.com/${OWNER}/${REPO}/tree/main/${FOLDER}`, "_blank");
+    function uploadClick() {
+      window.open(`https://github.com/${owner}/${repo}/uploads`, "_blank");
     }
 
     async function loadFiles() {
-      const status = document.getElementById("status");
-      const list = document.getElementById("files-list");
-      
-      status.textContent = "Files load ho rahe hain...";
-      list.innerHTML = "";
+      document.getElementById("status").textContent = "Loading...";
+      document.getElementById("files").innerHTML = "";
 
       try {
-        const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FOLDER}`);
-        
-        if (!response.ok) {
-          status.textContent = "Abhi koi file nahi hai. Upload button se file daal do.";
-          return;
-        }
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/uploads`);
+        if (!res.ok) throw new Error();
 
-        const files = await response.json();
-        const realFiles = files.filter(file => file.type === "file" && file.name !== ".gitkeep");
+        const data = await res.json();
+        const realFiles = data.filter(f => f.type === "file" && f.name !== ".gitkeep");
 
         if (realFiles.length === 0) {
-          status.textContent = "Abhi koi file nahi hai. Upload button se file daal do.";
+          document.getElementById("status").innerHTML = "Abhi koi file nahi hai. Upload button se daal do.";
           return;
         }
 
         let html = "";
         realFiles.forEach(file => {
-          const downloadUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${FOLDER}/${encodeURIComponent(file.name)}`;
-          const sizeKB = (file.size / 1024).toFixed(1);
-
+          const url = `https://raw.githubusercontent.com/${owner}/${repo}/main/uploads/${encodeURIComponent(file.name)}`;
           html += `
-            <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition">
-              <div class="flex gap-4">
-                <i class="fas fa-file text-5xl text-blue-500"></i>
-                <div class="flex-1">
-                  <h3 class="font-semibold text-lg break-all">${file.name}</h3>
-                  <p class="text-gray-500 text-sm">${sizeKB} KB</p>
-                  <a href="${downloadUrl}" download="${file.name}" 
-                     class="mt-6 block w-full text-center bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-medium">
-                    ⬇️ Download File
-                  </a>
-                </div>
-              </div>
+            <div class="bg-white p-6 rounded-3xl shadow">
+              <p class="font-medium break-all">${file.name}</p>
+              <a href="${url}" download class="mt-4 block text-center bg-green-600 text-white py-3 rounded-2xl">
+                Download
+              </a>
             </div>`;
         });
 
-        list.innerHTML = html;
-        status.innerHTML = `<span class="text-green-600 font-medium">${realFiles.length} files ready hain</span>`;
-
-      } catch (err) {
-        status.textContent = "Abhi uploads folder khali hai. Pehle Upload New Files button se file daal do.";
+        document.getElementById("files").innerHTML = html;
+        document.getElementById("status").innerHTML = `<span class="text-green-600">${realFiles.length} files hain</span>`;
+      } catch(e) {
+        document.getElementById("status").textContent = "Koi file nahi mila. Pehle upload karo.";
       }
     }
 
-    // Page khulte hi files load ho jayenge
     window.onload = loadFiles;
   </script>
 </body>
